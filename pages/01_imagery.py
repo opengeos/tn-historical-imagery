@@ -139,6 +139,11 @@ class Map(leafmap.Map):
         wms_url = "https://tnmap.tn.gov/arcgis/services/BASEMAPS/IMAGERY_WEB_MERCATOR/MapServer/WMSServer"
         self.add_wms_layer(wms_url, layers="0", name="TDOT Imagery", shown=True)
 
+        vexcel_url = "https://tnmap.giza.cloud/login/path/lotus-neptune-money-fire/wms"
+        self.add_wms_layer(
+            vexcel_url, layers="Vexcel_Imagery_2023", name="Vexcel 2023", shown=False
+        )
+
         self.add_layer_manager(opened=False)
         # add_widgets(self)
         geojson = "https://github.com/opengeos/datasets/releases/download/vector/TN_Counties.geojson"
