@@ -45,6 +45,7 @@ def add_widgets(m):
             layer.visible = False
 
     checkbox.observe(checkbox_map, names="value")
+    widgets.jslink((checkbox, "value"), (m.find_layer("TN Counties"), "visible"))
 
     def reset_map(change):
         if change.new:
