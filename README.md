@@ -20,7 +20,7 @@ The original imagery in MrSID format was download from the [TNGIC Google Drive](
 and hosted on Source Cooperative.
 
 - Web App: <https://giswqs-tn-historical-imagery.hf.space>
-- GitHub: <https://github.com/giswqs/tn-historical-imagery>
+- GitHub: <https://github.com/opengeos/tn-historical-imagery>
 - Hugging Face: <https://huggingface.co/spaces/giswqs/tn-historical-imagery>
 - Dataset: <https://source.coop/repositories/giswqs/tn-imagery>
 
