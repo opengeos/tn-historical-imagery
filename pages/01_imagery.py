@@ -14,7 +14,7 @@ def add_widgets(m):
 
     checkbox = widgets.Checkbox(
         value=True,
-        description="Footprints",
+        description="County",
         style=style,
         layout=widgets.Layout(width="90px", padding="0px"),
     )
@@ -35,14 +35,51 @@ def add_widgets(m):
 
     output = widgets.Output()
 
+    def checkbox_map(change):
+        if change.new:
+            layer = m.find_layer("TN Counties")
+            layer.visible = True
+            split.value = False
+        else:
+            layer = m.find_layer("TN Counties")
+            layer.visible = False
+
+    checkbox.observe(checkbox_map, names="value")
+
     def reset_map(change):
         if change.new:
-            pass
+            checkbox.value = True
+            split.value = False
+            layer = m.find_layer("Selected Image")
+            if layer is not None:
+                m.remove(layer)
+            output.clear_output()
 
     reset.observe(reset_map, names="value")
 
+    def change_split(change):
+        if change.new:
+            layer = m.find_layer("Selected Image")
+            if layer is not None:
+                m.remove(layer)
+
+            left_layer = m.url
+            right_layer = m.find_layer("TDOT Imagery")
+            layer = m.find_layer("TN Counties")
+            layer.visible = False
+            if left_layer is not None:
+                m.split_map(
+                    left_layer=left_layer,
+                    right_layer=right_layer,
+                    add_close_button=True,
+                )
+        else:
+            checkbox.value = True
+
+    split.observe(change_split, names="value")
+
     def handle_click(**kwargs):
-        if kwargs.get("type") == "click":
+        if kwargs.get("type") == "click" and (not split.value):
             latlon = kwargs.get("coordinates")
             geometry = Point(latlon[::-1])
             selected = m.gdf[m.gdf.intersects(geometry)]
@@ -50,18 +87,28 @@ def add_widgets(m):
             if len(selected) > 0:
                 filename = selected.iloc[0]["Filename"]
                 county = selected.iloc[0]["County"]
-                year = filename.split("_")[-1][:4]
-                with output:
-                    output.clear_output()
-                    output.append_stdout(f"County: {county} | Year: {year}")
-                url = f"https://data.source.coop/giswqs/tn-imagery/imagery/{filename}"
-                layer = m.find_layer("Selected Image")
-                if layer is not None:
-                    m.remove(layer)
-                m.default_style = {"cursor": "wait"}
-                m.add_cog_layer(url, name="Selected Image", zoom_to_layer=False)
-                m.default_style = {"cursor": "default"}
+                if county != "Knox":
+                    year = filename.split("_")[-1][:4]
+                    with output:
+                        output.clear_output()
+                        output.append_stdout(f"County: {county} | Year: {year}")
+                    url = (
+                        f"https://data.source.coop/giswqs/tn-imagery/imagery/{filename}"
+                    )
+                    layer = m.find_layer("Selected Image")
+                    if layer is not None:
+                        m.remove(layer)
+                    m.default_style = {"cursor": "wait"}
+                    m.add_cog_layer(url, name="Selected Image", zoom_to_layer=False)
+                    m.default_style = {"cursor": "default"}
+                    setattr(m, "url", url)
+                else:
+                    with output:
+                        output.clear_output()
+                        output.append_stdout("No image found.")
+                    setattr(m, "url", None)
             else:
+                setattr(m, "url", None)
                 with output:
                     output.clear_output()
                     output.append_stdout("No image found.")
@@ -100,7 +147,7 @@ class Map(leafmap.Map):
             layer_name="TN Counties",
             style=style,
             zoom_to_layer=False,
-            info_mode=None,
+            info_mode="on_hover",
         )
         gdf = gpd.read_file(geojson)
         setattr(self, "gdf", gdf)
