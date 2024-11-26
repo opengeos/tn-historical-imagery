@@ -76,6 +76,7 @@ def add_widgets(m):
                 )
         else:
             checkbox.value = True
+        # m.update_layer_manager()
 
     split.observe(change_split, names="value")
 
@@ -113,6 +114,7 @@ def add_widgets(m):
                 with output:
                     output.clear_output()
                     output.append_stdout("No image found.")
+        # m.update_layer_manager()
 
     m.on_interaction(handle_click)
 
