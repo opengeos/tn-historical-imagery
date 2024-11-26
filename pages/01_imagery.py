@@ -150,7 +150,7 @@ class Map(leafmap.Map):
             vexcel_url, layers="vdp_us_tennesse", name="Vexcel 2019", shown=False
         )
 
-        self.add_layer_manager(opened=False)
+        self.add_layer_manager(opened=True)
         # add_widgets(self)
         geojson = "https://github.com/opengeos/datasets/releases/download/vector/TN_Counties.geojson"
         style = {"color": "#3388ff", "opacity": 1, "weight": 2, "fillOpacity": 0}
