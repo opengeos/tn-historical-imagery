@@ -147,7 +147,7 @@ class Map(leafmap.Map):
             vexcel_url, layers="vexcel_imagery_2021", name="Vexcel 2021", shown=False
         )
         self.add_wms_layer(
-            vexcel_url, layers="vdp_us_tennessee", name="Vexcel 2019", shown=False
+            vexcel_url, layers="vdp_us_tennesse", name="Vexcel 2019", shown=False
         )
 
         self.add_layer_manager(opened=False)
